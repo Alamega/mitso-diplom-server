@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Вход')}"></th:block>
+</head>
+<body>
+<div class="container">
+  <header th:replace="~{layout :: header}"></header>
+
+  <div class="full-wrapper">
+    <div class="content">
+      <p class="title-green">Вход</p>
+
+      <form class="form_center" th:action="@{/login}" method="post">
+        <label class="label-green"  for="username">Никнейм</label>
+        <input class="input-green" type="text" name="username" id="username" maxlength="20"/>
+        <label class="label-green"  for="password">Пароль</label>
+        <input class="input-green" type="password" name="password" id="password" maxlength="20"/>
+        <button class="button-green">Войти</button>
+      </form>
+
+      <p style="color: red" th:if="${param.error}">Неверный логин или пароль.</p>
+    </div>
+    <div class="sidebar">
+      <div th:replace="~{layout :: sidebar}"></div>
+    </div>
+  </div>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link type="image/png" sizes="320x320" rel="icon" href="/images/icon.png" />
+  <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+  <script src="/scripts/toggleElVisible.js"></script>
+  <!--/*@thymesVar id="title" type="String"*/-->
+  <title th:text="${title}"></title>
+</head>
+<body>
+<!--HEADER-->
+<header th:fragment="header">
+  <a href="/"><h1>Alamega</h1></a>
+  <div id="clock">Где я потерял свои часы?</div>
+  <script src="/scripts/clock.js"></script>
+  <div class="navbar" id="navbar">
+    <button class="navbar_icon" id="navbar_btn" onclick="switchNavbar()"></button>
+    <div class="navbar_menu" id="navbar_menu"><div th:replace="~{layout :: menu}"></div></div>
+  </div>
+  <script src="/scripts/navbar.js"></script>
+</header>
+
+<!--MENU-->
+<th:block th:fragment="menu">
+        <a href="/login" sec:authorize="!isAuthenticated()">Вход</a>
+        <a href="/registration" sec:authorize="!isAuthenticated()">Регистрация</a>
+        <a href="/me" sec:authorize="isAuthenticated()">Личный кабинет</a>
+        <a href="/logout" sec:authorize="isAuthenticated()">Выход</a>
+</th:block>
+
+<!--SIDEBAR-->
+<th:block th:fragment="sidebar" th:replace="~{layout :: menu}"></th:block>
+
+<!--FOOTER-->
+<footer th:fragment="footer">
+  <p>&copy Made by Alamega</p>
+</footer>
+</body>
+</html>

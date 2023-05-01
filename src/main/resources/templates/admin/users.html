@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Управление пользователями')}"></th:block>
+</head>
+<body>
+  <div class="container">
+    <header th:replace="~{layout :: header}"></header>
+
+    <div class="full-wrapper">
+
+      <div class="content">
+        <div th:each="user : ${users}">
+          <div class="user-card">
+            <p>ID: <span th:text="${user.getId()}"></span></p>
+            <p>
+              Ник:<a th:text="${user.getUsername()}" th:href="@{'/users/'+${user.getUsername()}}"></a>
+              Роль: <span th:text="${user.getRole()}"></span>
+            </p>
+            <form style="width: 100%" th:action="@{'/admin/users/role/'+${user.getId()}}" method="post">
+              <button class="button-green" style="width: 100%; padding: 8px">Сменить роль</button>
+            </form>
+            <form style="width: 100%" th:action="@{'/admin/users/delete/'+${user.getId()}}" method="post">
+              <button class="button-delete" style="margin:0; width: 100%">Удалить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div th:replace="~{layout :: sidebar}"></div>
+      </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+  </div>
+</body>
+</html>

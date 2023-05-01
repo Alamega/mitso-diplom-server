@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<!--/*@thymesVar id="pageOwner" type="com.alamega.alamegaspringapp.user.User"*/-->
+<!--/*@thymesVar id="currentUser" type="com.alamega.alamegaspringapp.user.User"*/-->
+<!--/*@thymesVar id="posts" type="com.alamega.alamegaspringapp.post.Post[]"*/-->
+<head>
+    <th:block th:replace="~{layout :: head(${pageOwner.getUsername()})}"></th:block>
+</head>
+<body>
+
+<div class="container">
+    <header th:replace="~{layout :: header}"></header>
+
+    <div class="full-wrapper">
+        <div class="content">
+            <p class="title-green" th:text="${pageOwner.getUsername()}"></p>
+            <div th:switch="${pageOwner.getRole}">
+                <p>
+                    Роль:
+                    <span th:case="'ADMIN'" style="color: red">Администратор</span>
+                    <span th:case="'USER'" style="color: green">Пользователь</span>
+                    <span th:case="*">Чёрт бородатый</span>
+                </p>
+            </div>
+
+            <th:block th:if="${currentUser!=null && (currentUser.getUsername() == pageOwner.getUsername())}" >
+                <button class="button-green" onclick="toggleById('new-post')">Новый пост</button>
+                <div id="new-post" style="display: none">
+                    <form class="form_center" th:action="@{/posts}" method="post">
+                        <label class="label-green" for="text">Содержание поста</label>
+                        <textarea maxlength="1024" rows="5" class="textarea-green" name="text" id="text"></textarea>
+                        <button class="button-green">Опубликовать</button>
+                    </form>
+                </div>
+            </th:block>
+
+            <div class="posts">
+                <div class="post" th:each="post : ${posts}">
+                    <div class="post-header">
+                        <script th:inline="javascript">
+                            hour = [[${post.getDate().get(11)}]];
+                            min = [[${post.getDate().get(12)}]];
+                            day = [[${post.getDate().get(5)}]];
+                            month = [[${(post.getDate().get(2) + 1)}]];
+                            year = [[${post.getDate().get(1)}]];
+                            if ((min + "").length == 1) {  min = "0" + min; }
+                            if ((day + "").length == 1) { day = "0" + day; }
+                            if ((month + "").length == 1) { month = "0" + month; }
+                            document.write("<p class=\"post-date\">" + hour + ":" + min + " " + day + "." + month + "." + year + "</p>");
+                        </script>
+
+                        <th:block th:if="${currentUser!=null && (currentUser.getRole() == 'ADMIN' || currentUser.getId() == pageOwner.getId())}">
+                            <form th:action="@{'/posts/delete/'+${post.getId()}}" method="post">
+                                <input type="image" src="/images/delete.png" width="20" style="padding: 8px" alt="Удалить">
+                            </form>
+                        </th:block>
+                    </div>
+                    <hr>
+                    <p class="post-text" th:utext="${post.getText()}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div th:replace="~{layout :: sidebar}"></div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</div>
+</body>
+</html>

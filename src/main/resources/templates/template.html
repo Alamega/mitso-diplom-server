@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Заголовок')}"></th:block>
+</head>
+<body>
+  <div class="container">
+    <header th:replace="~{layout :: header}"></header>
+
+    <div class="full-wrapper">
+      <div class="content">
+        <p>Параграф</p>
+
+        <div sec:authorize="isAuthenticated()">
+          This content is only shown to authenticated users.
+        </div>
+        <div sec:authorize="hasAuthority('ADMIN')">
+          This content is only shown to administrators.
+        </div>
+        Logged user: <span sec:authentication="name"></span>
+        Roles: <span sec:authentication="principal.authorities"></span>
+      </div>
+      <div class="sidebar">
+        <div th:replace="~{layout :: sidebar}"></div>
+      </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+  </div>
+</body>
+</html>

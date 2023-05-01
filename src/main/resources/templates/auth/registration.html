@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Регистрация')}"></th:block>
+</head>
+<body>
+<div class="container">
+  <header th:replace="~{layout :: header}"></header>
+
+  <div class="full-wrapper">
+    <div class="content">
+      <p class="title-green">Регистрация</p>
+
+      <form class="form_center" th:action="@{/registration}" method="post">
+        <label class="label-green" for="username">Никнейм</label>
+        <input class="input-green" type="text" name="username" id="username" maxlength="20"/>
+        <label class="label-green"  for="password">Пароль</label>
+        <input class="input-green" type="password" name="password" id="password" maxlength="20"/>
+        <button class="button-green">Зарегистрироваться</button>
+      </form>
+
+      <p style="color: green" th:text="${result}"></p>
+      <a th:if="${result}" href='/login'>Войти</a>
+      <div th:each="err : ${errors}">
+        <p style="color: red" th:text="${err}"></p>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div th:replace="~{layout :: sidebar}"></div>
+    </div>
+  </div>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</div>
+</body>
+</html>
