@@ -66,7 +66,7 @@ function start(){
 
         result = result.replaceAll("{cpuPercentage}", json.cpuusage);
         let gpuPersentage = 0;
-        if (json.gpuinfo.length > 0) {
+        if (json.gpuinfo.length > 0 ?? json.gpuinfo[0].load != null) {
             gpuPersentage = json.gpuinfo[0].load;
         }
         result = result.replaceAll("{gpuPercentage}", gpuPersentage);
@@ -78,7 +78,6 @@ function start(){
             fullDiskUsage += disk.usage;
             fullDiskTotal += disk.total;
         });
-
         result = result.replaceAll("{diskUsage}", fullDiskUsage.toFixed(2));
         result = result.replaceAll("{diskTotal}", fullDiskTotal.toFixed(2));
 
@@ -93,7 +92,7 @@ function start(){
         progressBars[0].value = Math.round((json.ram.usage / json.ram.total) * 100);
         progressBars[1].value = Math.round(json.cpuusage);
         progressBars[2].value = Math.round(gpuPersentage);
-        progressBars[3].value = Math.round((fullDiskUsage / fullDiskTotal) * 100);
+        progressBars[3].value = parseInt(((fullDiskUsage / fullDiskTotal) * 100).toFixed(0));
     }
 
     socket.onclose = function(){
