@@ -37,9 +37,7 @@ public class InfoWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session,@NonNull  TextMessage message) {
-        //Эта функция нужна для получения сообщений ping которые нужны чтобы не умирала сессия
-    }
+    protected void handleTextMessage(@NonNull WebSocketSession session,@NonNull  TextMessage message) {}
 
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session,@NonNull  CloseStatus status) {

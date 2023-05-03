@@ -28,6 +28,7 @@
         <a href="/login" sec:authorize="!isAuthenticated()">Вход</a>
         <a href="/registration" sec:authorize="!isAuthenticated()">Регистрация</a>
         <a href="/me" sec:authorize="isAuthenticated()">Личный кабинет</a>
+        <a href="/admin" sec:authorize="isAuthenticated() && hasAuthority('ADMIN')">Админка</a>
         <a href="/logout" sec:authorize="isAuthenticated()">Выход</a>
 </th:block>
 

@@ -15,7 +15,8 @@
 }
 
 html {
-  background: white url(../images/bg.png) no-repeat center center/cover fixed;
+  /*background: white url(../images/bg.png) no-repeat center center/cover fixed;*/
+  background: #2c2c2c;
   height: 100%;
 }
 
@@ -30,7 +31,7 @@ body {
   flex-direction: column;
   margin: 0 auto;
   min-height: 100%;
-  max-width:960px;
+  max-width:1080px;
   box-shadow: 0 0 4px black;
   color: rgb(48, 48, 48);
   background-color: rgba(255, 255, 255, 0.8);
@@ -293,7 +294,7 @@ hr {
   display: block;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1080px) {
   .flex_cont {
     flex-direction: column;
   }
