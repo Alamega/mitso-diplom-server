@@ -1,6 +1,42 @@
 function start(){
     let socket;
 
+    let template = `
+          <div class="info-header">
+            <p>{isOnline}</p>
+            <p>{status}</p>
+          </div>
+          <hr />
+          <div class="info-header">
+            <p>MAC: <a href="/mac/{mac}">{mac}</a></p>
+            <p>Имя пользователя: {username}</p>
+          </div>
+          <hr />
+          <div class="info-content">
+            <p>Оперативная память:</p>
+            <p>{memoryUsage}/{memoryTotal}GB</p>
+          </div>
+          <progress value="0" max="100"></progress>
+          <hr />
+          <div class="info-content">
+            <p>Процессор:</p>
+            <p>{cpuPercentage}%</p>
+          </div>
+          <progress value="0" max="100"></progress>
+          <hr />
+          <div class="info-content">
+            <p>Видеокарта:</p>
+            <p>{gpuPercentage}%</p>
+          </div>
+          <progress value="0" max="100"></progress>
+          <hr />
+          <div class="info-content">
+            <p>Общее дисковое пространство:</p>
+            <p>{diskUsage}/{diskTotal}GB</p>
+          </div>
+          <progress value="0" max="100"></progress>
+        `;
+
     if (location.protocol !== 'https:') {
         socket = new WebSocket("ws://" + window.location.host + "/webSocketInfo")
     } else {
@@ -15,46 +51,49 @@ function start(){
 
     socket.onmessage = function(event) {
         let json = JSON.parse(event.data);
-
         let newEl = document.createElement("div");
         newEl.id = json.mac;
         newEl.className = "info-one-record";
 
-        // let result = "";
-        // result += "<p>MAC адрес: " + mac + "</p>";
-        // result += "<p>Операционная система: " + os + "</p>";
-        // result += "<p>Имя пользователя: " + username + "</p>";
-        // result += "<p>Процессор " + cpuname + " количество ядер: " + cores + "</p>";
-        // result += "<p>Нагрузка на процессор: " + cpuusage + "%</p>";
-        //
-        // if (Object.keys(cputemp).length > 0 && cputemp[Object.keys(cputemp)[0]] != 0) {
-        //     let cputempMap = new Map();
-        //     for (let i = 0; i < Object.keys(cputemp).length; i++) {
-        //         cputempMap.set(Object.keys(cputemp)[i], cputemp[Object.keys(cputemp)[i]]);
-        //     }
-        //     cputempMap = new Map([...cputempMap.entries()].sort());
-        //     result += "<p>Температура процессора:</p>";
-        //     cputempMap.forEach((value, key) => {
-        //         result += "<p>" + key + ": " + value + " С</p>";
-        //     });
-        // }
-        //
-        // result += "<p>Нагрузка на оперативную память: " + ram + "ГБ</p>";
-        // result += "<p>Загруженность на дисках:</p>";
-        // for (let i = 0; i < Object.keys(drivers).length; i++) {
-        //     result += "<p>Диск " + Object.keys(drivers)[i].substring(0, Object.keys(drivers)[i].length - 2) + " нагрузка: " + drivers[Object.keys(drivers)[i]] + "</p>";
-        // }
+        let result = template;
+        result = result.replaceAll("{isOnline}", "on");
+        result = result.replaceAll("{status}", "Всё гуд");
+        result = result.replaceAll("{mac}", json.mac);
+        result = result.replaceAll("{username}", json.username);
 
-        //Временно
-        newEl.innerText = JSON.stringify(json, null, 2);
-        //newEl.innerHTML = result;
+        result = result.replaceAll("{memoryUsage}", json.ram.usage.toFixed(2));
+        result = result.replaceAll("{memoryTotal}", json.ram.total.toFixed(2));
+
+        result = result.replaceAll("{cpuPercentage}", json.cpuusage);
+        let gpuPersentage = 0;
+        if (json.gpuinfo.length > 0) {
+            gpuPersentage = json.gpuinfo[0].load;
+        }
+        result = result.replaceAll("{gpuPercentage}", gpuPersentage);
+
+        let fullDiskUsage = 0;
+        let fullDiskTotal = 0;
+
+        json.discs.forEach((disk) => {
+            fullDiskUsage += disk.usage;
+            fullDiskTotal += disk.total;
+        });
+
+        result = result.replaceAll("{diskUsage}", fullDiskUsage.toFixed(2));
+        result = result.replaceAll("{diskTotal}", fullDiskTotal.toFixed(2));
 
         if (document.getElementById(json.mac) == null){
+            newEl.innerHTML = result;
             document.getElementById("ws-root").appendChild(newEl);
         } else {
-            //document.getElementById(json.mac).innerHTML = result;
-            document.getElementById(json.mac).innerText = JSON.stringify(json, null, 2);
+            document.getElementById(json.mac).innerHTML = result;
         }
+
+        let progressBars = document.getElementById(json.mac).getElementsByTagName("progress");
+        progressBars[0].value = Math.round((json.ram.usage / json.ram.total) * 100);
+        progressBars[1].value = Math.round(json.cpuusage);
+        progressBars[2].value = Math.round(gpuPersentage);
+        progressBars[3].value = Math.round((fullDiskUsage / fullDiskTotal) * 100);
     }
 
     socket.onclose = function(){

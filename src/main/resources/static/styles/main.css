@@ -16,7 +16,7 @@
 
 html {
   /*background: white url(../images/bg.png) no-repeat center center/cover fixed;*/
-  background: #2c2c2c;
+  background: #b8b8b8;
   height: 100%;
 }
 
@@ -243,7 +243,7 @@ hr {
   height: 1px;
   width: 98%;
   border-radius: 6px;
-  margin: 0 auto;
+  margin: 4px auto;
 }
 
 .post-text {
@@ -292,6 +292,35 @@ hr {
 .anime-link {
   cursor: pointer;
   display: block;
+}
+
+.info-one-record {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 4px black;
+  border-radius: 4px;
+  margin: 8px 0;
+  padding: 4px;
+}
+
+.info-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+progress {
+  width: auto;
+  height: 24px;
+  margin: 8px;
+  background-color: lightgreen;
+  animation: progressBar 3s ease-in-out;
 }
 
 @media (max-width: 1080px) {
