@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InfoWebSocketHandler extends TextWebSocketHandler {
-    private final List<WebSocketSession> webSocketSessions = new ArrayList<>();
+    private final List<WebSocketSession> sessions = new ArrayList<>();
 
     public static InfoWebSocketHandler webSocket = new InfoWebSocketHandler();
 
     public void sendOneInfo(String message) {
-        webSocketSessions.forEach(session -> {
+        sessions.forEach(session -> {
             try {
                 session.sendMessage(new TextMessage(message));
             } catch (IOException ignored) { }
@@ -26,14 +26,12 @@ public class InfoWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
-        //При подключении нового челобаса отправляем все данные
         SystemData.All.forEach((s, jsonObject) -> {
             try {
                 session.sendMessage(new TextMessage(jsonObject.toString()));
             } catch (IOException ignored) { }
         });
-        //Добавляем чела в список сессий
-        webSocketSessions.add(session);
+        sessions.add(session);
     }
 
     @Override
@@ -41,6 +39,6 @@ public class InfoWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session,@NonNull  CloseStatus status) {
-        webSocketSessions.remove(session);
+        sessions.remove(session);
     }
 }

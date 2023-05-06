@@ -9,7 +9,8 @@
 
   <div class="full-wrapper">
     <div class="content">
-      <p th:text="${json}"></p>
+      <div id="ws-root"></div>
+      <script src="/scripts/solo-ws.js"></script>
     </div>
     <div class="sidebar">
       <div th:replace="~{layout :: sidebar}"></div>

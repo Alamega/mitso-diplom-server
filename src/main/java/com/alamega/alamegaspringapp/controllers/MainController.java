@@ -16,8 +16,11 @@ public class MainController {
 
     @GetMapping({"mac/{macAddress}"})
     public String info(@PathVariable String macAddress, Model model) {
-        JSONObject json = SystemData.All.get(macAddress);
-        model.addAttribute("json", json);
-        return "info";
+        if (SystemData.All.containsKey(macAddress)) {
+            model.addAttribute("mac", macAddress);
+            return "info";
+        } else {
+            return "index";
+        }
     }
 }
