@@ -37,7 +37,7 @@ function start(){
             uuidHeader.id = "status-header";
             uuidHeader.className = "info-header";
             let macAddress = document.createElement("p");
-            macAddress.innerHTML = "MAC: <a href=\"mac/" + json.mac + "\">" + json.mac + "</a>";
+            macAddress.innerHTML = 'MAC: <a href="/mac/' + json.mac + "\">" + json.mac + "</a>";
             uuidHeader.appendChild(macAddress);
             let username = document.createElement("p");
             username.innerText = "Имя пользователя: " + json.username;

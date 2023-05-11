@@ -40,7 +40,7 @@
         <th:block th:each="cpu, loopCpu : ${cpuinfo}">
           <div class="solo-info-processor">
             <h1>Процессор: <span th:text="${cpu.get('name')}">Intel Core i3-8100</span></h1>
-            <div class="solo-info-conteiner">
+            <div class="solo-info-container">
               <th:block th:each="core, loopCore : ${cpu.get('cores')}">
                 <div class="solo-info-block core">
                   <p th:text="${core.get('name')}">CPU Core #1</p>

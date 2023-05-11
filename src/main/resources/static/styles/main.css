@@ -332,13 +332,15 @@ progress {
 .solo-info-header p {
   margin: 4px;
   padding: 8px;
-
   font-size: 20px;
   text-align: center;
   width: 100%;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 4px green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .solo-info-status {
@@ -353,15 +355,7 @@ progress {
   padding: 8px;
 }
 
-.solo-info-static {
-  margin: 4px;
-  padding: 4px;
-  font-size: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 4px green;
-}
-
-.solo-info-conteiner {
+.solo-info-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -370,6 +364,7 @@ progress {
   align-items: center;
   margin: 0 4px;
 }
+
 .solo-info-block {
   display: flex;
   flex-direction: column;
@@ -386,7 +381,8 @@ progress {
 .solo-info-gpu,
 .solo-info-phys,
 .solo-info-logic {
-  box-shadow: 0 0 8px green;
+  box-shadow: 0 0 6px green;
+  border-radius: 4px;
   margin: 8px 4px;
   padding: 4px;
   text-align: center;
@@ -395,8 +391,12 @@ progress {
 
 .core,
 .gpu {
-  box-shadow: 0 0 8px green;
+  box-shadow: inset 0 0 6px green;
+  border-radius: 4px;
   font-weight: bold;
+  flex-grow: 1;
+  margin: 8px;
+  min-width: calc(50% - 24px);
 }
 
 .core-bars,
