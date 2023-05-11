@@ -19,6 +19,8 @@ function start(){
 
     socket.onmessage = function(event) {
         let { cpuusage, cores, os, gpuinfo, discs, discsphysical, mac, username, ram, cpuinfo} = JSON.parse(event.data);
+
+
         document.getElementById("ramusage").innerText = ram.usage.toFixed(2);
         document.getElementById("ramtotal").innerText = ram.total.toFixed(2);
         document.getElementById("rampercentage").value = ram.usage / ram.total * 100;
@@ -48,7 +50,7 @@ function start(){
 
         for (let i = 0; i < gpuinfo.length; i++) {
             document.getElementById("gpu" + i + "load").innerText = gpuinfo[i].load.toFixed(0);
-            document.getElementById("bargpu" + i + "load").value = gpuinfo[i];
+            document.getElementById("bargpu" + i + "load").value = gpuinfo[i].load;
             document.getElementById("gpu" + i + "temp").innerText = gpuinfo[i].temperature || 0;
             document.getElementById("bargpu" + i + "temp").value = gpuinfo[i].temperature || 0;
         }
