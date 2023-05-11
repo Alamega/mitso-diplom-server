@@ -6,6 +6,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import static com.alamega.alamegaspringapp.wsHandlers.InfoWebSocketHandler.webSocket;
+import static com.alamega.alamegaspringapp.wsHandlers.PostWebSocketHandler.postWebSocket;
 import static com.alamega.alamegaspringapp.wsHandlers.SoloInfoWebSocketHandler.soloWebSocket;
 
 @Configuration
@@ -15,5 +16,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocket, "/webSocketInfo").setAllowedOrigins("*");
         registry.addHandler(soloWebSocket, "/soloWebSocketInfo").setAllowedOrigins("*");
+        registry.addHandler(postWebSocket, "/post").setAllowedOrigins("*");
     }
 }

@@ -323,6 +323,96 @@ progress {
   animation: progressBar 3s ease-in-out;
 }
 
+.solo-info-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.solo-info-header p {
+  margin: 4px;
+  padding: 8px;
+
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 4px green;
+}
+
+.solo-info-status {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  background-color: white;
+  color: red;
+  border-radius: 8px;
+  box-shadow: 0 0 4px red;
+  margin: 4px;
+  padding: 8px;
+}
+
+.solo-info-static {
+  margin: 4px;
+  padding: 4px;
+  font-size: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 4px green;
+}
+
+.solo-info-conteiner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 4px;
+}
+.solo-info-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 4px green;
+
+  min-width: calc(50% - 16px);
+
+  margin: 4px;
+  padding: 4px;
+}
+
+.solo-info-processor,
+.solo-info-gpu,
+.solo-info-phys,
+.solo-info-logic {
+  box-shadow: 0 0 8px green;
+  margin: 8px 4px;
+  padding: 4px;
+  text-align: center;
+  flex-direction: row;
+}
+
+.core,
+.gpu {
+  box-shadow: 0 0 8px green;
+  font-weight: bold;
+}
+
+.core-bars,
+.gpu-bars,
+.phys-bars,
+.logic-bars {
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  font-weight: normal;
+}
+
+.phys-disk p {
+  text-align: center;
+}
+
 @media (max-width: 1080px) {
   .flex_cont {
     flex-direction: column;
