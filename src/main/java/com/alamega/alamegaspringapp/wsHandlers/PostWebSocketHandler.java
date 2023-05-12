@@ -1,6 +1,9 @@
 package com.alamega.alamegaspringapp.wsHandlers;
 
 import com.alamega.alamegaspringapp.SystemData;
+import com.alamega.alamegaspringapp.info.Info;
+import com.alamega.alamegaspringapp.info.InfoRepository;
+import com.alamega.alamegaspringapp.user.UserRepository;
 import org.json.JSONObject;
 import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
@@ -19,6 +22,8 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
     private final List<WebSocketSession> sessions = new ArrayList<>();
 
     public static PostWebSocketHandler postWebSocket = new PostWebSocketHandler();
+
+    private static InfoRepository infoRepository;
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {

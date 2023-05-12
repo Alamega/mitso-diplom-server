@@ -64,7 +64,7 @@ header h1 {
 .content {
   display: flex;
   flex-direction: column;
-  flex: 4 0 0;
+  flex: 5 0 0;
   margin: 12px;
 }
 

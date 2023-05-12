@@ -28,6 +28,14 @@ public class AdminController {
         return "admin/users";
     }
 
+    @GetMapping( "/params")
+    public String params() {
+        return "admin/params";
+    }
+    @GetMapping( "/macs")
+    public String macs() {
+        return "admin/macs";
+    }
     @PostMapping("/users/role/{id}")
     public String setUserRole(@PathVariable UUID id) {
         if (userRepository.findById(id).isPresent()) {

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Управление допустимыми значениями параметров мониторинга')}"></th:block>
+</head>
+<body>
+<div class="container">
+  <header th:replace="~{layout :: header}"></header>
+
+  <div class="full-wrapper">
+    <div class="content">
+      <button class="button-green" onclick="window.location.href = '/admin/users'">51:11:51:94:6A:BF</button>
+      <button class="button-green" onclick="window.location.href = '/admin/users'">70:85:C2:C4:16:40</button>
+    </div>
+    <div class="sidebar">
+      <div th:replace="~{layout :: sidebar}"></div>
+    </div>
+  </div>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</div>
+</body>
+</html>

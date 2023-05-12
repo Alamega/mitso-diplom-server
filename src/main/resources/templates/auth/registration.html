@@ -19,6 +19,8 @@
         <button class="button-green">Зарегистрироваться</button>
       </form>
 
+      <p style="text-align: center">Уже есть аккаунт? <a href="/login">Авторизируйся!</a></p>
+
       <p style="color: green" th:text="${result}"></p>
       <a th:if="${result}" href='/login'>Войти</a>
       <div th:each="err : ${errors}">

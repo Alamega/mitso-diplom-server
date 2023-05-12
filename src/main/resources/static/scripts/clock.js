@@ -14,7 +14,7 @@ function clockUpdate() {
   if (time[2] < 10) {
     time[2] = "0" + time[2];
   }
-  clock.innerHTML = [time[0], time[1], time[2]].join(":");
+  clock.innerText = [time[0], time[1], time[2]].join(":");
 }
 clockUpdate();
 setInterval("clockUpdate()", 1000);

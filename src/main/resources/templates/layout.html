@@ -13,7 +13,7 @@
 <body>
 <!--HEADER-->
 <header th:fragment="header">
-  <a href="/"><h1>Alamega</h1></a>
+  <a href="/"><h1>Мониторинг</h1></a>
   <div id="clock">Где я потерял свои часы?</div>
   <script src="/scripts/clock.js"></script>
   <div class="navbar" id="navbar">
@@ -28,7 +28,7 @@
         <a href="/login" sec:authorize="!isAuthenticated()">Вход</a>
         <a href="/registration" sec:authorize="!isAuthenticated()">Регистрация</a>
         <a href="/me" sec:authorize="isAuthenticated()">Личный кабинет</a>
-        <a href="/admin" sec:authorize="isAuthenticated() && hasAuthority('ADMIN')">Админка</a>
+        <a href="/admin" sec:authorize="isAuthenticated() && hasAuthority('ADMIN')">Панель администратора</a>
         <a href="/logout" sec:authorize="isAuthenticated()">Выход</a>
 </th:block>
 
@@ -37,7 +37,7 @@
 
 <!--FOOTER-->
 <footer th:fragment="footer">
-  <p>&copy Made by Alamega</p>
+  <p>&copy Аll rights not reserved</p>
 </footer>
 </body>
 </html>

@@ -1,7 +1,6 @@
 package com.alamega.alamegaspringapp.controllers;
 
 import com.alamega.alamegaspringapp.SystemData;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:replace="~{layout :: head('Управление допустимыми значениями параметров мониторинга')}"></th:block>
+</head>
+<body>
+<div class="container">
+  <header th:replace="~{layout :: header}"></header>
+
+  <div class="full-wrapper">
+    <div class="content">
+      <p>Параграф</p>
+    </div>
+    <div class="sidebar">
+      <div th:replace="~{layout :: sidebar}"></div>
+    </div>
+  </div>
+
+  <footer th:replace="~{layout :: footer}"></footer>
+</div>
+</body>
+</html>
