@@ -1,7 +1,11 @@
 package com.alamega.alamegaspringapp.controllers;
 
+import com.alamega.alamegaspringapp.SystemData;
+import com.alamega.alamegaspringapp.info.Info;
+import com.alamega.alamegaspringapp.info.InfoRepository;
 import com.alamega.alamegaspringapp.user.User;
 import com.alamega.alamegaspringapp.user.UserRepository;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +15,13 @@ import java.util.UUID;
 @Controller
 @RequestMapping("admin")
 public class AdminController {
-    final
-    UserRepository userRepository;
-    public AdminController(UserRepository userRepository) {
+    final UserRepository userRepository;
+    final InfoRepository infoRepository;
+    final SystemData systemData;
+    public AdminController(UserRepository userRepository, InfoRepository infoRepository, SystemData systemData) {
         this.userRepository = userRepository;
+        this.infoRepository = infoRepository;
+        this.systemData = systemData;
     }
 
     @GetMapping({"", "/"})
@@ -28,14 +35,24 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping( "/params")
-    public String params() {
+    @GetMapping( "/params/{mac}")
+    public String params(@PathVariable String mac, Model model) {
+        Info info = infoRepository.findByMac(mac);
+        if (info != null) {
+            JSONObject json = new JSONObject(info.getConfig());
+            model.addAttribute("config", json.toString());
+            SystemData.addToModel(model, json);
+        }
         return "admin/params";
     }
+
+
     @GetMapping( "/macs")
-    public String macs() {
+    public String macs(Model model) {
+        model.addAttribute("macs", systemData.All);
         return "admin/macs";
     }
+
     @PostMapping("/users/role/{id}")
     public String setUserRole(@PathVariable UUID id) {
         if (userRepository.findById(id).isPresent()) {

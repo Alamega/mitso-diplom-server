@@ -9,8 +9,9 @@
 
   <div class="full-wrapper">
     <div class="content">
-      <button class="button-green" onclick="window.location.href = '/admin/users'">51:11:51:94:6A:BF</button>
-      <button class="button-green" onclick="window.location.href = '/admin/users'">70:85:C2:C4:16:40</button>
+      <th:block th:each="mac, loop : ${macs}">
+        <a class="button-green" th:href="'/admin/params/' + ${mac.getValue().get('mac')}" th:text="${mac.getValue().get('mac')}"></a>
+      </th:block>
     </div>
     <div class="sidebar">
       <div th:replace="~{layout :: sidebar}"></div>

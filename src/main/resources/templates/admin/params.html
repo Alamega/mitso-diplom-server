@@ -9,7 +9,173 @@
 
   <div class="full-wrapper">
     <div class="content">
-      <p>Параграф</p>
+      <div class="solo-info-header">
+        <p th:text="${mac}">mac</p>
+      </div>
+
+      <div class="info-content">
+        <p>Оперативная память:</p>
+        <p><span id="rampercentage">0</span>%</p>
+      </div>
+      <input id="rampercentageinput" type="range" min="0" max="100" value="0" class="slider" />
+
+      <div class="info-content">
+        <p>Общая нагрузка на процессор:</p>
+        <p><span id="cpuusagepercentage">0</span>%</p>
+      </div>
+      <input id="cpuusagepercentageinput" type="range" min="0" max="100" value="0" class="slider" />
+
+      <p>Процессоры:</p>
+      <div id="processors">
+        <th:block th:each="cpu, loopCpu : ${cpuinfo}">
+          <div class="solo-info-processor">
+            <h1>Процессор: <span th:text="${cpu.get('name')}">Intel Core i3-8100</span></h1>
+            <div class="solo-info-container">
+              <th:block th:each="core, loopCore : ${cpu.get('cores')}">
+                <div class="solo-info-block core">
+                  <p th:text="${core.get('name')}">CPU Core</p>
+                  <div class="solo-info-block core-bars">
+                    <hr />
+                    <p>Нагрузка до <span th:id="'cpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'">0</span>%</p>
+                    <input th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'" type="range" min="0" max="100" value="0" class="slider" />
+                    <hr />
+                    <p>
+                      Температура до
+                      <input th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'temp'" type="number" class="input-green" style="width: 48px; height: 10px; text-align: center" min="0" max="200" value="0" /> C
+                    </p>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+
+      <p th:if="${gpuinfo.length()}>0">Графические процессоры:</p>
+      <div class="gpus">
+
+        <th:block th:each="gpu, loopGpu : ${gpuinfo}">
+          <div class="solo-info-gpu">
+            <h1 th:text="${gpu.get('name')}">Видюха</h1>
+            <hr />
+            <div class="solo-info-block gpu-bars">
+              <p>Нагрузка до <span th:id="'gpu'+${loopGpu.index}+'load'">0</span>%</p>
+              <input th:id="'bargpu'+${loopGpu.index}+'load'" type="range" min="0" max="100" value="0" class="slider" />
+              <hr />
+              <p>
+                Температура до
+                <input th:id="'gpu'+${loopGpu.index}+'temp'" type="number" class="input-green" style="width: 48px; height: 10px; text-align: center" min="0" max="200" value="100" /> C
+              </p>
+              <input th:id="'bargpu'+${loopGpu.index}+'temp'" type="range" min="0" max="100" value="0" class="slider" />
+            </div>
+          </div>
+        </th:block>
+
+      </div>
+
+      <p>Физические накопители:</p>
+      <div class="phys-disks">
+        <th:block th:each="disk, loop : ${discsphysical}">
+          <div class="solo-info-phys">
+            <h1 th:text="${disk.get('name')}">Имя диска</h1>
+            <hr />
+            <div class="solo-info-block phys-bars">
+              <p>Нагрузка до <span th:id="'phys'+${loop.index}">0</span>%</p>
+              <input th:id="'barphys'+${loop.index}" type="range" min="0" max="100" value="0" class="slider" />
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+      <p>Логические накопители:</p>
+      <div class="logic-disks">
+        <th:block th:each="disk, loop : ${discs}">
+          <div class="solo-info-logic">
+            <h1>Диск <span th:text="${disk.get('name')}">"Буква"</span></h1>
+            <hr />
+            <div class="solo-info-block logic-bars">
+              <p>Нагрузка до <span th:id="'logic'+${loop.index}+'percentage'">0</span>%</p>
+              <input th:id="'barlogic'+${loop.index}" type="range" min="0" max="100" value="0" class="slider" />
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+      <script th:inline="javascript">
+        let config = [[${config}]];
+        let json = JSON.parse(config);
+        console.log(json)
+        function addOnchange(initValue, id, idInput) {
+          document.getElementById(idInput).value = initValue;
+          document.getElementById(id).innerText = document.getElementById(idInput).value;
+          document.getElementById(idInput).onchange = () => {
+            document.getElementById(id).innerText = document.getElementById(idInput).value;
+          };
+        }
+
+        addOnchange(json.ram.usage, "rampercentage", "rampercentageinput");
+        addOnchange(json.cpuusage, "cpuusagepercentage", "cpuusagepercentageinput");
+
+        for (let i = 0; i < json.cpuinfo.length; i++) {
+          for (let j = 0; j < json.cpuinfo[i].cores.length; j++) {
+            addOnchange(json.cpuinfo[i].cores[j].load, "cpu" + i + "core" + j + "load", "barcpu" + i + "core" + j + "load");
+            document.getElementById("barcpu" + i + "core" + j + "temp").value = json.cpuinfo[i].cores[j].temperature || 0;
+          }
+        }
+
+        for (let i = 0; i < json.gpuinfo.length; i++) {
+          addOnchange(json.gpuinfo[i].load, "gpu" + i + "load", "bargpu" + i + "load");
+          document.getElementById("bargpu" + i + "temp").value = json.gpuinfo[i].temperature || 0;
+        }
+
+        for (let i = 0; i < json.discsphysical.length; i++) {
+          addOnchange(json.discsphysical[i].load, "phys" + i, "barphys" + i);
+        }
+
+        for (let i = 0; i < json.discs.length; i++) {
+          addOnchange(json.discs[i].usage, "logic" + i + "percentage", "barlogic" + i);
+        }
+
+        function postJson() {
+          document.getElementById("postResult").innerText = ""
+
+          json.ram.usage = document.getElementById("rampercentageinput").value;
+          json.cpuusage = document.getElementById("cpuusagepercentageinput").value;
+
+          for (let i = 0; i < json.cpuinfo.length; i++) {
+            for (let j = 0; j < json.cpuinfo[i].cores.length; j++) {
+              json.cpuinfo[i].cores[j].load = document.getElementById("barcpu" + i + "core" + j + "load").value;
+              json.cpuinfo[i].cores[j].temperature = document.getElementById("barcpu" + i + "core" + j + "temp").value;
+            }
+          }
+
+          for (let i = 0; i < json.gpuinfo.length; i++) {
+            json.gpuinfo[i].load = document.getElementById("bargpu" + i + "load")
+            json.gpuinfo[i].temperature = document.getElementById("bargpu" + i + "temp").value;
+          }
+
+          for (let i = 0; i < json.discsphysical.length; i++) {
+            json.discsphysical[i].load = document.getElementById("barphys" + i).value;
+          }
+
+          for (let i = 0; i < json.discs.length; i++) {
+            json.discs[i].usage = document.getElementById("barlogic" + i).value;
+          }
+
+          fetch("/admin/postConfig", {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(json)
+          }).then(async (response) => {
+            if(await response.body) {
+              document.getElementById("postResult").innerText = "Допустимые значения сохранены."
+            }
+          });
+        }
+      </script>
+      <div style="text-align: center; margin: 10px; color: green;" id="postResult"></div>
+      <button class="button-green" onclick="postJson()">Сохранить</button>
     </div>
     <div class="sidebar">
       <div th:replace="~{layout :: sidebar}"></div>
