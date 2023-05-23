@@ -4,6 +4,7 @@ import com.alamega.alamegaspringapp.SystemData;
 import org.json.JSONObject;
 import org.json.JSONString;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -14,11 +15,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Component
 public class SoloInfoWebSocketHandler extends TextWebSocketHandler {
     private final List<WebSocketSession> watchers = new ArrayList<>();
     private final HashMap<String, List<WebSocketSession>> macWatchers = new HashMap<>();
-    public static SoloInfoWebSocketHandler soloWebSocket = new SoloInfoWebSocketHandler();
+    final SystemData systemData;
 
+    public SoloInfoWebSocketHandler(SystemData systemData) {
+        this.systemData = systemData;
+    }
     public void sendOneInfoSolo(String message) {
         JSONObject json = new JSONObject(message);
         if (json.has("mac") && macWatchers.containsKey(json.getString("mac"))) {
@@ -43,9 +48,9 @@ public class SoloInfoWebSocketHandler extends TextWebSocketHandler {
                 macWatchers.put(message.getPayload(), new ArrayList<>());
             }
             macWatchers.get(message.getPayload()).add(session);
-            if (SystemData.All.containsKey(message.getPayload())) {
+            if (systemData.All.containsKey(message.getPayload())) {
                 try {
-                    session.sendMessage(new TextMessage(SystemData.All.get(message.getPayload()).toString()));
+                    session.sendMessage(new TextMessage(systemData.All.get(message.getPayload()).toString()));
                 } catch (IOException ignored) {
                 }
             }

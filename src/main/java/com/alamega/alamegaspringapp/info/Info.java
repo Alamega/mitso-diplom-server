@@ -12,27 +12,19 @@ public class Info {
     @Column(name = "mac", nullable = false)
     private String mac;
 
-    private String dynamicData;
-
-    private String staticData;
-
     private boolean isOnline;
 
-    private String lastUpdateTime;
+    @Column(length=1024)
+    private String config;
 
-    public Info() {
-        this.dynamicData = "";
-        this.staticData = "";
-        this.isOnline = false;
-        this.lastUpdateTime = "";
-    }
+    private String currentStatus;
 
-    public Info(String mac, String dynamicData) {
+    public Info() {}
+
+    public Info(String mac, String config) {
         this.mac = mac;
-        this.dynamicData = dynamicData;
-        this.staticData = "";
         this.isOnline = false;
-        this.lastUpdateTime = "";
+        this.config = config;
     }
 
     public String getMac() {
@@ -43,35 +35,27 @@ public class Info {
         this.mac = mac;
     }
 
-    public String getDynamicData() {
-        return dynamicData;
-    }
-
-    public void setDynamicData(String dynamicData) {
-        this.dynamicData = dynamicData;
-    }
-
-    public String getStaticData() {
-        return staticData;
-    }
-
-    public void setStaticData(String staticData) {
-        this.staticData = staticData;
-    }
-
     public boolean isOnline() {
         return isOnline;
+    }
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
     }
 
     public void setOnline(boolean online) {
         isOnline = online;
     }
 
-    public String getLastUpdateTime() {
-        return lastUpdateTime;
+    public String getCurrentStatus() {
+        return currentStatus;
     }
 
-    public void setLastUpdateTime(String lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+    public void setCurrentStatus(String currentStatus) {
+        this.currentStatus = currentStatus;
     }
 }

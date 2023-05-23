@@ -1,6 +1,10 @@
 package com.alamega.alamegaspringapp.controllers;
 
 import com.alamega.alamegaspringapp.SystemData;
+import com.alamega.alamegaspringapp.info.InfoRepository;
+import com.alamega.alamegaspringapp.record.RecordRepository;
+import com.alamega.alamegaspringapp.wsHandlers.InfoWebSocketHandler;
+import com.alamega.alamegaspringapp.wsHandlers.SoloInfoWebSocketHandler;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class MainController {
+    final SystemData systemData;
+
+    public MainController(SystemData systemData) {
+        this.systemData = systemData;
+    }
     @GetMapping({"/", "index", "index.html"})
     public String index() {
         return "index";
@@ -16,8 +25,8 @@ public class MainController {
 
     @GetMapping({"mac/{macAddress}"})
     public String info(@PathVariable String macAddress, Model model) {
-        if (SystemData.All.containsKey(macAddress)) {
-            JSONObject json =  SystemData.All.get(macAddress);
+        if (systemData.All.containsKey(macAddress)) {
+            JSONObject json =  systemData.All.get(macAddress);
             model.addAttribute("mac",  json.get("mac"));
             model.addAttribute("cpuusage",  json.get("cpuusage"));
             model.addAttribute("cores",  json.get("cores"));

@@ -1,21 +1,31 @@
 package com.alamega.alamegaspringapp.config;
 
+import com.alamega.alamegaspringapp.wsHandlers.InfoWebSocketHandler;
+import com.alamega.alamegaspringapp.wsHandlers.PostWebSocketHandler;
+import com.alamega.alamegaspringapp.wsHandlers.SoloInfoWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import static com.alamega.alamegaspringapp.wsHandlers.InfoWebSocketHandler.webSocket;
-import static com.alamega.alamegaspringapp.wsHandlers.PostWebSocketHandler.postWebSocket;
-import static com.alamega.alamegaspringapp.wsHandlers.SoloInfoWebSocketHandler.soloWebSocket;
-
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+
+    final PostWebSocketHandler postWebSocketHandler;
+    final InfoWebSocketHandler infoWebSocketHandler;
+    final SoloInfoWebSocketHandler soloInfoWebSocketHandler;
+
+    public WebSocketConfig(PostWebSocketHandler postWebSocketHandler, InfoWebSocketHandler infoWebSocketHandler, SoloInfoWebSocketHandler soloInfoWebSocketHandler) {
+        this.postWebSocketHandler = postWebSocketHandler;
+        this.infoWebSocketHandler = infoWebSocketHandler;
+        this.soloInfoWebSocketHandler = soloInfoWebSocketHandler;
+    }
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocket, "/webSocketInfo").setAllowedOrigins("*");
-        registry.addHandler(soloWebSocket, "/soloWebSocketInfo").setAllowedOrigins("*");
-        registry.addHandler(postWebSocket, "/post").setAllowedOrigins("*");
+        registry.addHandler(infoWebSocketHandler, "/webSocketInfo").setAllowedOrigins("*");
+        registry.addHandler(soloInfoWebSocketHandler, "/soloWebSocketInfo").setAllowedOrigins("*");
+        registry.addHandler(postWebSocketHandler, "/post").setAllowedOrigins("*");
     }
 }
