@@ -14,6 +14,7 @@ function start(){
     }, 30000)
 
     function addFromJSON(root, json) {
+        console.log(json)
         if (!document.getElementById(json.mac)) {
             let newInfo = document.createElement("div");
             newInfo.id = json.mac;
@@ -21,13 +22,28 @@ function start(){
 
             //Информация о статусе
             let statusHeader = document.createElement("div");
-            statusHeader.id = "status-header";
             statusHeader.className = "info-header";
+
             let isOnline = document.createElement("p");
-            isOnline.innerText = "Online";
+            isOnline.id = "isonline";
+            if (json.isonline) {
+                isOnline.innerText = "Online";
+                isOnline.style.color = "green";
+            } else {
+                isOnline.innerText = "Offline";
+                isOnline.style.color = "red";
+            }
             statusHeader.appendChild(isOnline);
+
             let statusInfo = document.createElement("p");
-            statusInfo.innerText = "Всё в норме";
+            statusInfo.id = "status";
+            if (json.status) {
+                statusInfo.innerText = "Требуется внимание";
+                statusInfo.style.color = "red";
+            } else {
+                statusInfo.innerText = "Всё в норме";
+                statusInfo.style.color = "green";
+            }
             statusHeader.appendChild(statusInfo);
             newInfo.appendChild(statusHeader);
             newInfo.appendChild(document.createElement("hr"));
@@ -43,7 +59,12 @@ function start(){
             username.innerText = "Имя пользователя: " + json.username;
             uuidHeader.appendChild(username);
             newInfo.appendChild(uuidHeader);
-            newInfo.appendChild(document.createElement("hr"));
+
+            let dynamicInfoWrapper = document.createElement("span");
+            dynamicInfoWrapper.id = "dynamicinfowrapper";
+            dynamicInfoWrapper.style.display = (json.isonline) ? "flex" : "none";
+            dynamicInfoWrapper.style.flexDirection = "column";
+            dynamicInfoWrapper.appendChild(document.createElement("hr"));
 
             //Информация о оперативной памяти
             let ramInfo = document.createElement("div");
@@ -55,15 +76,15 @@ function start(){
             let ramUsage = document.createElement("p");
             ramUsage.innerText = (json.ram.usage || 0).toFixed(2) + "/" + (json.ram.total || 0).toFixed(2) + "ГБ";
             ramInfo.appendChild(ramUsage);
-            newInfo.appendChild(ramInfo);
+            dynamicInfoWrapper.appendChild(ramInfo);
 
             //Прогресс-бар оперативной памяти
             let ramBar = document.createElement("progress");
             ramBar.id = "info-ram-bar";
             ramBar.max = 100;
             ramBar.value = (json.ram.usage / json.ram.total) * 100;
-            newInfo.appendChild(ramBar);
-            newInfo.appendChild(document.createElement("hr"));
+            dynamicInfoWrapper.appendChild(ramBar);
+            dynamicInfoWrapper.appendChild(document.createElement("hr"));
 
             //Информация о процессоре
             let cpuInfo = document.createElement("div");
@@ -75,15 +96,15 @@ function start(){
             let cpuUsage = document.createElement("p");
             cpuUsage.innerText = (json.cpuusage || 0) + "%";
             cpuInfo.appendChild(cpuUsage);
-            newInfo.appendChild(cpuInfo);
+            dynamicInfoWrapper.appendChild(cpuInfo);
 
             //Прогресс-бар процессора
             let cpuBar = document.createElement("progress");
             cpuBar.id = "info-cpu-bar";
             cpuBar.max = 100;
             cpuBar.value = json.cpuusage || 0;
-            newInfo.appendChild(cpuBar);
-            newInfo.appendChild(document.createElement("hr"));
+            dynamicInfoWrapper.appendChild(cpuBar);
+            dynamicInfoWrapper.appendChild(document.createElement("hr"));
 
             if (json.gpuinfo.length > 0) {
                 //Информация о видеокарте
@@ -96,15 +117,15 @@ function start(){
                 let gpuUsage = document.createElement("p");
                 gpuUsage.innerText = (json.gpuinfo[0].load || 0) + "%";
                 gpuInfo.appendChild(gpuUsage);
-                newInfo.appendChild(gpuInfo);
+                dynamicInfoWrapper.appendChild(gpuInfo);
 
                 //Прогресс-бар видеокарты
                 let gpuBar = document.createElement("progress");
                 gpuBar.id = "info-gpu-bar";
                 gpuBar.max = 100;
                 gpuBar.value = json.gpuinfo[0].load || 0;
-                newInfo.appendChild(gpuBar);
-                newInfo.appendChild(document.createElement("hr"));
+                dynamicInfoWrapper.appendChild(gpuBar);
+                dynamicInfoWrapper.appendChild(document.createElement("hr"));
             }
 
             //Информация о дисках
@@ -125,18 +146,34 @@ function start(){
             let discsUsage = document.createElement("p");
             discsUsage.innerText = fullDiskUsage.toFixed(2) + "/" + fullDiskTotal.toFixed(2) + "ГБ";
             discsInfo.appendChild(discsUsage);
-            newInfo.appendChild(discsInfo);
+            dynamicInfoWrapper.appendChild(discsInfo);
 
             //Прогресс-бар дисков
             let discsBar = document.createElement("progress");
             discsBar.id = "info-discs-bar";
             discsBar.max = 100;
             discsBar.value = (fullDiskUsage / fullDiskTotal) * 100;
-            newInfo.appendChild(discsBar);
-
+            dynamicInfoWrapper.appendChild(discsBar);
+            newInfo.appendChild(dynamicInfoWrapper);
             root.appendChild(newInfo);
         } else {
             let selectedInfo = document.getElementById(json.mac);
+            if (json.isonline) {
+                selectedInfo.querySelector("#isonline").innerHTML = "Online";
+                selectedInfo.querySelector("#isonline").style.color = "green";
+                selectedInfo.querySelector("#dynamicinfowrapper").style.display = "flex";
+            } else {
+                selectedInfo.querySelector("#isonline").innerHTML = "Offline";
+                selectedInfo.querySelector("#isonline").style.color = "red";
+                selectedInfo.querySelector("#dynamicinfowrapper").style.display = "none";
+            }
+            if (json.status) {
+                selectedInfo.querySelector("#status").innerHTML = "Требуется внимание";
+                selectedInfo.querySelector("#status").style.color = "red";
+            } else {
+                selectedInfo.querySelector("#status").innerHTML = "Всё в норме";
+                selectedInfo.querySelector("#status").style.color = "green";
+            }
             selectedInfo.querySelectorAll("#info-ram p")[1].innerHTML = (json.ram.usage || 0).toFixed(2) + "/" + (json.ram.total || 0).toFixed(2) + "ГБ";
             selectedInfo.querySelector("#info-ram-bar").value = (json.ram.usage / json.ram.total) * 100;
             selectedInfo.querySelectorAll("#info-cpu p")[1].innerHTML = (json.cpuusage || 0) + "%";

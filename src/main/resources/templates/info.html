@@ -18,94 +18,97 @@
       <p>Имя пользователя: <span th:text="${username}">Пользователь</span></p>
       <p>Всего логических ядер процессора: <span th:text="${cores}">0</span></p>
 
-      <div class="info-content">
-        <p>Оперативная память:</p>
-        <p><span id="ramusage">0</span>/<span id="ramtotal">0</span>ГБ</p>
-      </div>
-      <progress id="rampercentage" max="100" value="0"></progress>
-      <div class="info-content">
-        <p>Общая нагрузка на процессор:</p>
-        <p><span id="cpuusage">0</span>%</p>
-      </div>
-      <progress id="cpupercentage" max="100" value="0"></progress>
+      <div id="dynamicinfowrapper" style="display: none; flex-direction: column;">
+        <div class="info-content">
+          <p>Оперативная память:</p>
+          <p><span id="ramusage">0</span>/<span id="ramtotal">0</span>ГБ</p>
+        </div>
+        <progress id="rampercentage" max="100" value="0"></progress>
+        <div class="info-content">
+          <p>Общая нагрузка на процессор:</p>
+          <p><span id="cpuusage">0</span>%</p>
+        </div>
+        <progress id="cpupercentage" max="100" value="0"></progress>
 
-      <div class="info-content">
-        <p>Общее дисковое пространство:</p>
-        <p><span id="fulldiskusage">0</span>/<span id="fulldisktotal">0</span>ГБ</p>
-      </div>
-      <progress id="fulldiskpercentage" max="100" value="0"></progress>
+        <div class="info-content">
+          <p>Общее дисковое пространство:</p>
+          <p><span id="fulldiskusage">0</span>/<span id="fulldisktotal">0</span>ГБ</p>
+        </div>
+        <progress id="fulldiskpercentage" max="100" value="0"></progress>
 
-      <p>Процессоры:</p>
-      <div id="processors">
-        <th:block th:each="cpu, loopCpu : ${cpuinfo}">
-          <div class="solo-info-processor">
-            <h1>Процессор: <span th:text="${cpu.get('name')}">Intel Core i3-8100</span></h1>
-            <div class="solo-info-container">
-              <th:block th:each="core, loopCore : ${cpu.get('cores')}">
-                <div class="solo-info-block core">
-                  <p th:text="${core.get('name')}">CPU Core #1</p>
-                  <div class="solo-info-block core-bars">
-                    <hr />
-                    <p>Нагрузка: <span th:id="'cpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'">0</span>%</p>
-                    <progress th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'" max="100" value="0"></progress>
-                    <hr />
-                    <p>Температура: <span th:id="'cpu'+${loopCpu.index}+'core'+${loopCore.index}+'temp'">0</span> C</p>
-                    <progress th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'temp'" max="100" value="0"></progress>
+        <p>Процессоры:</p>
+        <div id="processors">
+          <th:block th:each="cpu, loopCpu : ${cpuinfo}">
+            <div class="solo-info-processor">
+              <h1>Процессор: <span th:text="${cpu.get('name')}">Intel Core i3-8100</span></h1>
+              <div class="solo-info-container">
+                <th:block th:each="core, loopCore : ${cpu.get('cores')}">
+                  <div class="solo-info-block core">
+                    <p th:text="${core.get('name')}">CPU Core #1</p>
+                    <div class="solo-info-block core-bars">
+                      <hr />
+                      <p>Нагрузка: <span th:id="'cpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'">0</span>%</p>
+                      <progress th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'load'" max="100" value="0"></progress>
+                      <hr />
+                      <p>Температура: <span th:id="'cpu'+${loopCpu.index}+'core'+${loopCore.index}+'temp'">0</span> C</p>
+                      <progress th:id="'barcpu'+${loopCpu.index}+'core'+${loopCore.index}+'temp'" max="100" value="0"></progress>
+                    </div>
                   </div>
-                </div>
-              </th:block>
+                </th:block>
+              </div>
             </div>
-          </div>
-        </th:block>
-      </div>
+          </th:block>
+        </div>
 
 
-      <p th:if="${gpuinfo.length()}>0">Графические процессоры:</p>
-      <div class="gpus">
+        <p th:if="${gpuinfo.length()}>0">Графические процессоры:</p>
+        <div class="gpus">
 
-        <th:block th:each="gpu, loopGpu : ${gpuinfo}">
-          <div class="solo-info-gpu">
-            <h1 th:text="${gpu.get('name')}">Видюха</h1>
-            <hr />
-            <div class="solo-info-block gpu-bars">
-              <p>Нагрузка: <span th:id="'gpu'+${loopGpu.index}+'load'">0</span>%</p>
-              <progress th:id="'bargpu'+${loopGpu.index}+'load'" max="100" value="0"></progress>
+          <th:block th:each="gpu, loopGpu : ${gpuinfo}">
+            <div class="solo-info-gpu">
+              <h1 th:text="${gpu.get('name')}">Видюха</h1>
               <hr />
-              <p>Температура: <span th:id="'gpu'+${loopGpu.index}+'temp'">0</span> C</p>
-              <progress th:id="'bargpu'+${loopGpu.index}+'temp'" max="100" value="0"></progress>
+              <div class="solo-info-block gpu-bars">
+                <p>Нагрузка: <span th:id="'gpu'+${loopGpu.index}+'load'">0</span>%</p>
+                <progress th:id="'bargpu'+${loopGpu.index}+'load'" max="100" value="0"></progress>
+                <hr />
+                <p>Температура: <span th:id="'gpu'+${loopGpu.index}+'temp'">0</span> C</p>
+                <progress th:id="'bargpu'+${loopGpu.index}+'temp'" max="100" value="0"></progress>
+              </div>
             </div>
-          </div>
-        </th:block>
+          </th:block>
 
+        </div>
+
+        <p>Физические накопители:</p>
+        <div class="phys-disks">
+          <th:block th:each="disk, loop : ${discsphysical}">
+            <div class="solo-info-phys">
+              <h1 th:text="${disk.get('name')}">Имя диска</h1>
+              <hr />
+              <div class="solo-info-block phys-bars">
+                <p>Нагрузка: <span th:id="'phys'+${loop.index}">0</span>%</p>
+                <progress th:id="'barphys'+${loop.index}" max="100" value="0"></progress>
+              </div>
+            </div>
+          </th:block>
+        </div>
+
+        <p>Логические накопители:</p>
+        <div class="logic-disks">
+          <th:block th:each="disk, loop : ${discs}">
+            <div class="solo-info-logic">
+              <h1>Диск <span th:text="${disk.get('name')}">"Буква"</span></h1>
+              <hr />
+              <div class="solo-info-block logic-bars">
+                <p>Нагрузка: <span th:id="'logic'+${loop.index}">0/0</span> (<span th:id="'logic'+${loop.index}+'percentage'">0</span>%)</p>
+                <progress th:id="'barlogic'+${loop.index}" max="100" value="0"></progress>
+              </div>
+            </div>
+          </th:block>
+        </div>
       </div>
 
-      <p>Физические накопители:</p>
-      <div class="phys-disks">
-        <th:block th:each="disk, loop : ${discsphysical}">
-          <div class="solo-info-phys">
-            <h1 th:text="${disk.get('name')}">Имя диска</h1>
-            <hr />
-            <div class="solo-info-block phys-bars">
-              <p>Нагрузка: <span th:id="'phys'+${loop.index}">0</span>%</p>
-              <progress th:id="'barphys'+${loop.index}" max="100" value="0"></progress>
-            </div>
-          </div>
-        </th:block>
-      </div>
-
-      <p>Логические накопители:</p>
-      <div class="logic-disks">
-        <th:block th:each="disk, loop : ${discs}">
-          <div class="solo-info-logic">
-            <h1>Диск <span th:text="${disk.get('name')}">"Буква"</span></h1>
-            <hr />
-            <div class="solo-info-block logic-bars">
-              <p>Нагрузка: <span th:id="'logic'+${loop.index}">0/0</span> (<span th:id="'logic'+${loop.index}+'percentage'">0</span>%)</p>
-              <progress th:id="'barlogic'+${loop.index}" max="100" value="0"></progress>
-            </div>
-          </div>
-        </th:block>
-      </div>
 
       <script src="/scripts/solo-ws.js"></script>
     </div>

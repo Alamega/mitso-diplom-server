@@ -10,7 +10,7 @@
   <div class="full-wrapper">
     <div class="content">
       <th:block th:each="mac, loop : ${macs}">
-        <a class="button-green" th:href="'/admin/params/' + ${mac.getValue().get('mac')}" th:text="${mac.getValue().get('mac')}"></a>
+        <a class="button-green" th:href="'/admin/params/' + ${mac}" th:text="${mac}"></a>
       </th:block>
     </div>
     <div class="sidebar">

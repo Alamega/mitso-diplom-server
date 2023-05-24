@@ -32,7 +32,7 @@ public class InfoWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         systemData.All.forEach((s, jsonObject) -> {
             try {
-                session.sendMessage(new TextMessage(jsonObject.toString()));
+                session.sendMessage(new TextMessage(jsonObject.get(jsonObject.size() - 1).toString()));
             } catch (IOException ignored) { }
         });
         sessions.add(session);

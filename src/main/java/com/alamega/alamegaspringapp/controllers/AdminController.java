@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -49,7 +51,11 @@ public class AdminController {
 
     @GetMapping( "/macs")
     public String macs(Model model) {
-        model.addAttribute("macs", systemData.All);
+        List<String> macs = new ArrayList<>();
+        infoRepository.findAll().forEach(info -> {
+            macs.add(info.getMac());
+        });
+        model.addAttribute("macs", macs);
         return "admin/macs";
     }
 

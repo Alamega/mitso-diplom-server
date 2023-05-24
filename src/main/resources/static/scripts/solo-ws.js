@@ -18,9 +18,24 @@ function start(){
     }
 
     socket.onmessage = function(event) {
-        let { cpuusage, cores, os, gpuinfo, discs, discsphysical, mac, username, ram, cpuinfo} = JSON.parse(event.data);
-
-
+        let { cpuusage, cores, os, gpuinfo, discs, discsphysical, mac, username, ram, cpuinfo, isonline, status} = JSON.parse(event.data);
+        console.log(JSON.parse(event.data))
+        if (status && status.length > 0) {
+            document.getElementById("status").innerText = status;
+            document.getElementById("status").style.display = "block";
+        } else {
+            document.getElementById("status").innerText = "";
+            document.getElementById("status").style.display = "none";
+        }
+        if (isonline) {
+            document.getElementById("isonline").innerText = "Online";
+            document.getElementById("isonline").style.color = "green";
+            document.getElementById("dynamicinfowrapper").style.display = "flex";
+        } else {
+            document.getElementById("isonline").innerText = "Offline";
+            document.getElementById("isonline").style.color = "red";
+            document.getElementById("dynamicinfowrapper").style.display = "none";
+        }
         document.getElementById("ramusage").innerText = ram.usage.toFixed(2);
         document.getElementById("ramtotal").innerText = ram.total.toFixed(2);
         document.getElementById("rampercentage").value = ram.usage / ram.total * 100;

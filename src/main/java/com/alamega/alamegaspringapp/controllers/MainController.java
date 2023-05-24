@@ -22,7 +22,7 @@ public class MainController {
     @GetMapping({"mac/{macAddress}"})
     public String info(@PathVariable String macAddress, Model model) {
         if (systemData.All.containsKey(macAddress)) {
-            JSONObject json =  systemData.All.get(macAddress);
+            JSONObject json =  systemData.All.get(macAddress).get(systemData.All.get(macAddress).size() - 1);
             SystemData.addToModel(model, json);
             return "info";
         } else {

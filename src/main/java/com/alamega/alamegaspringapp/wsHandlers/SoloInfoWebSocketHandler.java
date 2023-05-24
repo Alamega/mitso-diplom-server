@@ -2,7 +2,6 @@ package com.alamega.alamegaspringapp.wsHandlers;
 
 import com.alamega.alamegaspringapp.SystemData;
 import org.json.JSONObject;
-import org.json.JSONString;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -50,7 +49,7 @@ public class SoloInfoWebSocketHandler extends TextWebSocketHandler {
             macWatchers.get(message.getPayload()).add(session);
             if (systemData.All.containsKey(message.getPayload())) {
                 try {
-                    session.sendMessage(new TextMessage(systemData.All.get(message.getPayload()).toString()));
+                    session.sendMessage(new TextMessage(systemData.All.get(message.getPayload()).get(systemData.All.get(message.getPayload()).size() - 1).toString()));
                 } catch (IOException ignored) {
                 }
             }

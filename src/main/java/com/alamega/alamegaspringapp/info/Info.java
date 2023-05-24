@@ -17,6 +17,9 @@ public class Info {
     @Column(length=1024)
     private String config;
 
+    @Column(length=65536)
+    private String data;
+
     private String currentStatus;
 
     public Info() {}
@@ -25,6 +28,14 @@ public class Info {
         this.mac = mac;
         this.isOnline = false;
         this.config = config;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getMac() {
