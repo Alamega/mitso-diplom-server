@@ -34,9 +34,10 @@ public class SpringSecurityConfig {
                 //Пускать только админов
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 //Пускать только авторизированных
-                .requestMatchers("/authenticated/**").authenticated()
                 //Пускать всех
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/images/**", "/scripts/**", "/styles/**", "/login", "/registration", "/post").permitAll()
+                .requestMatchers("/**").authenticated()
+
             .and()
                 .formLogin()
                 .loginPage("/login")

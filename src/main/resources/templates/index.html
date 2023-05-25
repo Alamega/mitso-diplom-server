@@ -9,12 +9,13 @@
 
     <div class="full-wrapper">
       <div class="content">
-        <style>
-
-        </style>
-        <div id="ws-root"></div>
-        <script src="/scripts/ws.js"></script>
-
+        <th:block sec:authorize="isAuthenticated()">
+          <div id="ws-root"></div>
+          <script src="/scripts/ws.js"></script>
+        </th:block>
+        <th:block sec:authorize="!isAuthenticated()">
+          <p>Для доступа к системе необходимо <a style="padding: 0" href="/login">войти</a>, используя указанные при <a style="padding: 0" href="/registration">регистрации</a> логин и пароль.</p>
+        </th:block>
       </div>
       <div class="sidebar">
         <div th:replace="~{layout :: sidebar}"></div>
