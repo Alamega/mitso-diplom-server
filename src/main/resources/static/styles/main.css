@@ -344,6 +344,7 @@ progress {
 }
 
 .solo-info-status {
+  flex-direction: column;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
@@ -352,7 +353,22 @@ progress {
   border-radius: 8px;
   box-shadow: 0 0 4px red;
   margin: 4px;
-  padding: 8px;
+  padding: 4px;
+}
+
+.solo-info-status:first-child {
+  margin-bottom: 0;
+}
+
+.solo-info-status:last-child {
+  margin-top: 0;
+}
+
+.solo-info-status-one {
+  box-shadow: inset 0 0 4px;
+  border-radius: 4px;
+  margin: 6px;
+  padding: 12px;
 }
 
 .solo-info-container {

@@ -20,6 +20,7 @@ public class Info {
     @Column(length=65536)
     private String data;
 
+    @Column(length=2048)
     private String currentStatus;
 
     public Info() {}

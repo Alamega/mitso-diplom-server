@@ -14,7 +14,9 @@ import java.util.Map;
 
 @Component
 public class SystemData {
-    final int MAX_DATA_STORAGE = 10;
+    final int MAX_DATA_STORAGE = 20;
+
+    final int MIN_WARNING_PERCENTAGE = 10;
     final InfoRepository infoRepository;
     public Map<String, List<JSONObject>> All = new HashMap<>();
 
@@ -30,11 +32,12 @@ public class SystemData {
         });
     }
 
-    public String getStatusByMacAndInfo(Info info) {
+    public String getStatus(Info info) {
         String status = "";
         List<JSONObject> data = All.get(info.getMac());
         JSONObject config = new JSONObject(info.getConfig());
 
+        //Оперативная память
         double ramUsageCounter = 0;
         double cpuUsageCounter = 0;
         for (int i = 0; i < data.size(); i++) {
@@ -46,16 +49,102 @@ public class SystemData {
             }
         }
         double ramUsagePercentage = ramUsageCounter * 100 / data.size();
-        if (ramUsagePercentage > 10) {
+        if (ramUsagePercentage > MIN_WARNING_PERCENTAGE) {
             status += "Нагрузка на оперативную память превышает допустимое значение " + String.format("%.0f", ramUsagePercentage) + "% времени работы\n";
         }
         double cpuUsagePercentage = cpuUsageCounter * 100 / data.size();
-        if (cpuUsagePercentage > 10) {
+        if (cpuUsagePercentage > MIN_WARNING_PERCENTAGE) {
             status += "Общая нагрузка на процессор превышает допустимое значение " + String.format("%.0f", cpuUsagePercentage) + "% времени работы\n";
         }
 
+        //Графические процессоры
+        JSONArray gpus = new JSONArray(config.getJSONArray("gpuinfo"));
+        for (int i = 0; i < gpus.length(); i++) {
+            JSONObject gpuFromConfig = gpus.getJSONObject(i);
+            double gpuUsageCounter = 0;
+            double gpuTempCounter = 0;
+            for (int j = 0; j < data.size(); j++) {
+                JSONObject gpuFromData = data.get(j).getJSONArray("gpuinfo").getJSONObject(i);
+                if (gpuFromData.getDouble("load") > gpuFromConfig.getDouble("load")) {
+                    gpuUsageCounter++;
+                }
+                if (gpuFromData.getDouble("temperature") > gpuFromConfig.getDouble("temperature")) {
+                    gpuTempCounter++;
+                }
+            }
+            double gpuUsagePercentage = gpuUsageCounter * 100 / data.size();
+            if (gpuUsagePercentage > MIN_WARNING_PERCENTAGE) {
+                status += "Нагрузка на графический процессор " + gpuFromConfig.getString("name") + " превышает допустимое значение " + String.format("%.0f", gpuUsagePercentage) + "% времени работы\n";
+            }
+            double gpuTempPercentage = gpuTempCounter * 100 / data.size();
+            if (gpuUsagePercentage > MIN_WARNING_PERCENTAGE) {
+                status += "Температура графического процессора " + gpuFromConfig.getString("name") + " превышает допустимое значение " + String.format("%.0f", gpuTempPercentage) + "% времени работы\n";
+            }
+        }
 
+        //Процессоры
+        JSONArray cpusConfig = new JSONArray(config.getJSONArray("cpuinfo"));
+        for (int cpuCounter = 0; cpuCounter < cpusConfig.length(); cpuCounter++) {
+            String cpuName = cpusConfig.getJSONObject(cpuCounter).getString("name");
+            JSONArray coresConfig = cpusConfig.getJSONObject(cpuCounter).getJSONArray("cores");
+            for (int coreCounter = 0; coreCounter < coresConfig.length(); coreCounter++) {
+                JSONObject coreFromConfig = coresConfig.getJSONObject(coreCounter);
+                double coreUsageCounter = 0;
+                double coreTempCounter = 0;
+                for (int i = 0; i < data.size(); i++) {
+                    JSONObject coreFromData = data.get(i).getJSONArray("cpuinfo").getJSONObject(cpuCounter).getJSONArray("cores").getJSONObject(coreCounter);
+                    if (coreFromData.getInt("load") > coreFromConfig.getDouble("load")) {
+                        coreUsageCounter++;
+                    }
+                    if (coreFromData.getInt("temperature") > coreFromConfig.getDouble("temperature")) {
+                        coreTempCounter++;
+                    }
+                }
+                double coreUsagePercentage = coreUsageCounter * 100 / data.size();
+                if (coreUsagePercentage > MIN_WARNING_PERCENTAGE) {
+                    status += "Нагрузка на ядро " + coreFromConfig.getString("name") + " процессора " + cpuName + " превышает допустимое значение " + String.format("%.0f", coreUsagePercentage) + "% времени работы\n";
+                }
+                double coreTempPercentage = coreTempCounter * 100 / data.size();
+                if (coreTempPercentage > MIN_WARNING_PERCENTAGE) {
+                    status += "Температура ядра " + coreFromConfig.getString("name") + " процессора " + cpuName + " превышает допустимое значение " + String.format("%.0f", coreTempPercentage) + "% времени работы\n";
+                }
+            }
 
+        }
+
+        //Физические диски
+        JSONArray discsphysical = new JSONArray(config.getJSONArray("discsphysical"));
+        for (int i = 0; i < discsphysical.length(); i++) {
+            JSONObject discFFromConfig = discsphysical.getJSONObject(i);
+            double diskFUsageCounter = 0;
+            for (int j = 0; j < data.size(); j++) {
+                JSONObject diskFFromData = data.get(j).getJSONArray("discsphysical").getJSONObject(i);
+                if (diskFFromData.getDouble("load") > discFFromConfig.getDouble("load")) {
+                    diskFUsageCounter++;
+                }
+            }
+            double diskFUsagePercentage = diskFUsageCounter * 100 / data.size();
+            if (diskFUsagePercentage > MIN_WARNING_PERCENTAGE) {
+                status += "Нагрузка на физический диск " + discFFromConfig.getString("name") + " превышает допустимое значение " + String.format("%.0f", diskFUsagePercentage) + "% времени работы\n";
+            }
+        }
+
+        //Логические диски
+        JSONArray discs = new JSONArray(config.getJSONArray("discs"));
+        for (int i = 0; i < discs.length(); i++) {
+            JSONObject discFromConfig = discs.getJSONObject(i);
+            double diskUsageCounter = 0;
+            for (int j = 0; j < data.size(); j++) {
+                JSONObject diskFromData = data.get(j).getJSONArray("discs").getJSONObject(i);
+                if ((diskFromData.getDouble("usage") / diskFromData.getDouble("total") * 100) > discFromConfig.getDouble("usage")) {
+                    diskUsageCounter++;
+                }
+            }
+            double diskUsagePercentage = diskUsageCounter * 100 / data.size();
+            if (diskUsagePercentage > MIN_WARNING_PERCENTAGE) {
+                status += "Нагрузка на логический диск " + discFromConfig.getString("name") + " превышает допустимое значение " + String.format("%.0f", diskUsagePercentage) + "% времени работы\n";
+            }
+        }
         return status;
     }
 
@@ -66,7 +155,7 @@ public class SystemData {
         All.get(mac).add(json);
         Info info = infoRepository.findByMac(mac);
         info.setData(new JSONArray(All.get(mac)).toString());
-        info.setCurrentStatus(getStatusByMacAndInfo(info));
+        info.setCurrentStatus(getStatus(info));
         infoRepository.save(info);
     }
 

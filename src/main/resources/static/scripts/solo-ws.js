@@ -21,8 +21,15 @@ function start(){
         let { cpuusage, cores, os, gpuinfo, discs, discsphysical, mac, username, ram, cpuinfo, isonline, status} = JSON.parse(event.data);
         console.log(JSON.parse(event.data))
         if (status && status.length > 0) {
-            document.getElementById("status").innerText = status;
-            document.getElementById("status").style.display = "block";
+            document.getElementById("status").innerHTML = "";
+            let statusArray = status.split("\n");
+            for (let i = 0; i < statusArray.length - 1; i++) {
+                let doc = document.createElement("div");
+                doc.className = "solo-info-status-one"
+                doc.innerText = statusArray[i];
+                document.getElementById("status").appendChild(doc)
+            }
+            document.getElementById("status").style.display = "flex";
         } else {
             document.getElementById("status").innerText = "";
             document.getElementById("status").style.display = "none";
