@@ -149,9 +149,40 @@ public class SystemData {
     }
 
     public void addJsonByMac(String mac, JSONObject json) {
-        if (All.get(mac).size() > MAX_DATA_STORAGE - 1) {
+        //Добавить если нету
+        if (!All.containsKey(mac)) {
+            All.put(mac, new ArrayList<>());
+
+            //Создаем поле настроек для бд
+            JSONObject jsonConfig = new JSONObject(json.toString());
+            jsonConfig.put("cpuusage", 100);
+            jsonConfig.getJSONObject("ram").put("usage", 100);
+            for (int i = 0; i < jsonConfig.getJSONArray("gpuinfo").length(); i++) {
+                jsonConfig.getJSONArray("gpuinfo").getJSONObject(i).put("load", 100);
+            }
+            for (int i = 0; i < jsonConfig.getJSONArray("discs").length(); i++) {
+                jsonConfig.getJSONArray("discs").getJSONObject(i).put("usage", 100);
+            }
+            for (int i = 0; i < jsonConfig.getJSONArray("discsphysical").length(); i++) {
+                jsonConfig.getJSONArray("discsphysical").getJSONObject(i).put("load", 100);
+            }
+            for (int i = 0; i < jsonConfig.getJSONArray("cpuinfo").length(); i++) {
+                JSONArray array = jsonConfig.getJSONArray("cpuinfo").getJSONObject(i).getJSONArray("cores");
+                for (int j = 0; j < array.length(); j++) {
+                    array.getJSONObject(j).put("load", 100);
+                    array.getJSONObject(j).put("temperature", 100);
+                }
+            }
+            Info newInfo = new Info(json.getString("mac"), jsonConfig.toString());
+            newInfo.setOnline(true);
+            infoRepository.save(newInfo);
+        }
+
+        //Удалить если много
+        while (All.get(mac).size() > MAX_DATA_STORAGE - 1) {
             All.get(mac).remove(0);
         }
+
         All.get(mac).add(json);
         Info info = infoRepository.findByMac(mac);
         info.setData(new JSONArray(All.get(mac)).toString());
@@ -161,13 +192,8 @@ public class SystemData {
 
     public void addServerInfo(JSONObject jsonObject) {
         Info info = infoRepository.findByMac(jsonObject.getString("mac"));
-        if (info != null) {
-            jsonObject.put("isonline", info.isOnline());
-            jsonObject.put("status", info.getCurrentStatus());
-        } else {
-            jsonObject.put("isonline", false);
-            jsonObject.put("status", "");
-        }
+        jsonObject.put("isonline", info.isOnline());
+        jsonObject.put("status", info.getCurrentStatus());
     }
 
     public static void addToModel(Model model, JSONObject json) {

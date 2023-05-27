@@ -36,68 +36,45 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
         Properties props = new Properties();
         try {
             props.load(new FileInputStream("config.ini"));
-        } catch (IOException e) {
-            System.out.println("Не удалось загрузить настройки, так как не обнаружен файл config.ini, используются значения по умолчанию.");
-        }
-
+        } catch (IOException ignored) {}
         this.password  = props.getProperty("PASSWORD", "1111");
     }
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
-        macSessions.put(session, null);
-    }
-
-    @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
-        JSONObject json = new JSONObject(message.getPayload());
-        if (json.getString("password").equals(this.password)) {
-            if (macSessions.get(session) == null) {
-                macSessions.put(session, json.getString("mac"));
-                systemData.All.put(json.getString("mac"), new ArrayList<>());
-            }
-            systemData.addServerInfo(json);
-            infoWebSocketHandler.sendOneInfo(json.toString());
-            soloInfoWebSocketHandler.sendOneInfoSolo(json.toString());
-            if (infoRepository.findByMac(json.getString("mac")) == null) {
-                JSONObject jsonConfig = new JSONObject(json.toString());
-                jsonConfig.put("cpuusage", 100);
-                jsonConfig.getJSONObject("ram").put("usage", 100);
-                for (int i = 0; i < jsonConfig.getJSONArray("gpuinfo").length(); i++) {
-                    jsonConfig.getJSONArray("gpuinfo").getJSONObject(i).put("load", 100);
-                }
-                for (int i = 0; i < jsonConfig.getJSONArray("discs").length(); i++) {
-                    jsonConfig.getJSONArray("discs").getJSONObject(i).put("usage", 100);
-                }
-                for (int i = 0; i < jsonConfig.getJSONArray("discsphysical").length(); i++) {
-                    jsonConfig.getJSONArray("discsphysical").getJSONObject(i).put("load", 100);
-                }
-                for (int i = 0; i < jsonConfig.getJSONArray("cpuinfo").length(); i++) {
-                    JSONArray array = jsonConfig.getJSONArray("cpuinfo").getJSONObject(i).getJSONArray("cores");
-                    for (int j = 0; j < array.length(); j++) {
-                        array.getJSONObject(j).put("load", 100);
-                        array.getJSONObject(j).put("temperature", 100);
-                    }
-                }
-                infoRepository.save(new Info(json.getString("mac"), jsonConfig.toString()));
-            }
-            systemData.addJsonByMac(json.getString("mac"), json);
-            Info info = infoRepository.findByMac(json.getString("mac"));
+        String mac = session.getHandshakeHeaders().getFirst("mac");
+        macSessions.put(session, mac);
+        Info info = infoRepository.findByMac(mac);
+        if (info != null) {
             info.setOnline(true);
             infoRepository.save(info);
         }
     }
 
     @Override
+    protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
+        JSONObject json = new JSONObject(message.getPayload());
+        if (json.getString("password").equals(this.password) && macSessions.containsKey(session)) {
+            systemData.addServerInfo(json);
+            infoWebSocketHandler.sendOneInfo(json.toString());
+            soloInfoWebSocketHandler.sendOneInfoSolo(json.toString());
+            systemData.addJsonByMac(json.getString("mac"), json);
+        }
+    }
+
+    @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session,@NonNull  CloseStatus status) {
-        Info info = infoRepository.findByMac(macSessions.get(session));
+        String mac = macSessions.get(session);
+
+        Info info = infoRepository.findByMac(mac);
         if (info != null) {
             info.setOnline(false);
             infoRepository.save(info);
         }
-        JSONObject json = systemData.All.get(macSessions.get(session)).get(systemData.All.get(macSessions.get(session)).size() - 1);
+
+        JSONObject json = systemData.All.get(mac).get(systemData.All.get(mac).size() - 1);
         systemData.addServerInfo(json);
-        systemData.addJsonByMac(json.getString("mac"), json);
+        systemData.addJsonByMac(mac, json);
         infoWebSocketHandler.sendOneInfo(json.toString());
         soloInfoWebSocketHandler.sendOneInfoSolo(json.toString());
         macSessions.remove(session);

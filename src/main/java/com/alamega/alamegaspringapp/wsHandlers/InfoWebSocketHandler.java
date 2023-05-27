@@ -24,7 +24,7 @@ public class InfoWebSocketHandler extends TextWebSocketHandler {
         sessions.forEach(session -> {
             try {
                 session.sendMessage(new TextMessage(message));
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {}
         });
     }
 

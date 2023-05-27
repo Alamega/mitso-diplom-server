@@ -11,11 +11,17 @@
 
       <div class="content">
         <div th:each="user : ${users}">
-          <div class="user-card">
+          <!--/*@thymesVar id="user" type="com.alamega.alamegaspringapp.user.User"*/-->
+          <div th:if="${#authentication.principal.username} != ${user.getUsername()}" class="user-card">
             <p>ID: <span th:text="${user.getId()}"></span></p>
             <p>
               Ник:<a th:text="${user.getUsername()}" th:href="@{'/users/'+${user.getUsername()}}"></a>
-              Роль: <span th:text="${user.getRole()}"></span>
+              Роль:
+              <th:block th:switch="${user.getRole()}">
+                  <span th:case="'ADMIN'" style="color: red">Администратор</span>
+                  <span th:case="'USER'" style="color: green">Пользователь</span>
+                  <span th:case="*">Чёрт бородатый</span>
+              </th:block>
             </p>
             <form style="width: 100%" th:action="@{'/admin/users/role/'+${user.getId()}}" method="post">
               <button class="button-green" style="width: 100%; padding: 8px">Сменить роль</button>

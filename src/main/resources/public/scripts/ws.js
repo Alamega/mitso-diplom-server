@@ -196,6 +196,7 @@ function start(){
     }
 
     socket.onmessage = function(event) {
+
         addFromJSON(document.getElementById("ws-root"), JSON.parse(event.data));
     }
 
