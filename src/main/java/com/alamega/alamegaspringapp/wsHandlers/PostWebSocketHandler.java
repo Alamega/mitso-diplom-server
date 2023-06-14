@@ -41,7 +41,6 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         String mac = session.getHandshakeHeaders().getFirst("mac");
-        systemData.resetSession(mac);
         macSessions.put(session, mac);
         Info info = infoRepository.findByMac(mac);
         if (info != null) {

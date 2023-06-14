@@ -15,7 +15,6 @@ import java.util.Map;
 @Component
 public class SystemData {
     final int MAX_DATA_STORAGE = 100;
-
     final int MIN_WARNING_PERCENTAGE = 10;
     final InfoRepository infoRepository;
     public Map<String, List<JSONObject>> All = new HashMap<>();
@@ -195,13 +194,6 @@ public class SystemData {
         jsonObject.put("isonline", info.isOnline());
         jsonObject.put("status", info.getCurrentStatus());
     }
-
-    public void resetSession(String mac) {
-        JSONObject last = All.get(mac).get(All.get(mac).size()-1);
-        All.get(mac).clear();
-        All.get(mac).add(last);
-    }
-
     public static void addToModel(Model model, JSONObject json) {
         model.addAttribute("mac",  json.get("mac"));
         model.addAttribute("cpuusage",  json.get("cpuusage"));
