@@ -3,7 +3,6 @@ package com.alamega.alamegaspringapp.wsHandlers;
 import com.alamega.alamegaspringapp.SystemData;
 import com.alamega.alamegaspringapp.info.Info;
 import com.alamega.alamegaspringapp.info.InfoRepository;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -43,6 +41,7 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         String mac = session.getHandshakeHeaders().getFirst("mac");
+        systemData.resetSession(mac);
         macSessions.put(session, mac);
         Info info = infoRepository.findByMac(mac);
         if (info != null) {

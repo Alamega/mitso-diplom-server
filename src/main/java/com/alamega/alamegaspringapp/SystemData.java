@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 public class SystemData {
-    final int MAX_DATA_STORAGE = 20;
+    final int MAX_DATA_STORAGE = 100;
 
     final int MIN_WARNING_PERCENTAGE = 10;
     final InfoRepository infoRepository;
@@ -37,11 +37,11 @@ public class SystemData {
         List<JSONObject> data = All.get(info.getMac());
         JSONObject config = new JSONObject(info.getConfig());
 
-        //Оперативная память
+        //Оперативная память и проц
         double ramUsageCounter = 0;
         double cpuUsageCounter = 0;
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getJSONObject("ram").getInt("usage") > config.getJSONObject("ram").getInt("usage")) {
+            if ((data.get(i).getJSONObject("ram").getDouble("usage") / data.get(i).getJSONObject("ram").getDouble("total") * 100) > config.getJSONObject("ram").getInt("usage")) {
                 ramUsageCounter++;
             }
             if (data.get(i).getInt("cpuusage") > config.getInt("cpuusage")) {
@@ -194,6 +194,12 @@ public class SystemData {
         Info info = infoRepository.findByMac(jsonObject.getString("mac"));
         jsonObject.put("isonline", info.isOnline());
         jsonObject.put("status", info.getCurrentStatus());
+    }
+
+    public void resetSession(String mac) {
+        JSONObject last = All.get(mac).get(All.get(mac).size()-1);
+        All.get(mac).clear();
+        All.get(mac).add(last);
     }
 
     public static void addToModel(Model model, JSONObject json) {
