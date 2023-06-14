@@ -4,6 +4,7 @@ import com.alamega.alamegaspringapp.user.User;
 import com.alamega.alamegaspringapp.user.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -12,13 +13,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 public class AuthController {
     private final UserRepository userRepository;
+    String adminUsername;
+
     public AuthController(UserRepository userRepository) {
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream("config.ini"));
+        } catch (IOException ignored) {}
+        adminUsername  = props.getProperty("ADMIN_USERNAME", "ALAMEGA");
         this.userRepository = userRepository;
     }
 
@@ -57,7 +68,7 @@ public class AuthController {
             user.setUsername(username);
             user.setPassword(new BCryptPasswordEncoder().encode(password));
             //Ну с таким никнеймом...
-            if (username.equals("Alamega")) {
+            if (username.equals(adminUsername)) {
                 user.setRole("ADMIN");
             } else {
                 user.setRole("USER");

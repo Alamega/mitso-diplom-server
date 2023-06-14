@@ -24,9 +24,7 @@ public class DataSourceConfig {
         Properties props = new Properties();
         try {
             props.load(new FileInputStream("config.ini"));
-        } catch (IOException e) {
-            System.out.println("Не удалось загрузить настройки, так как не обнаружен файл config.ini, используются значения по умолчанию.");
-        }
+        } catch (IOException ignored) {}
 
         final String url  = props.getProperty("DATABASE_URL", defaultUrl);
         final String username  = props.getProperty("DATABASE_USERNAME", defaultUsername);
