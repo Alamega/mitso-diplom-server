@@ -50,6 +50,7 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
             Info newInfo = new Info(mac, "");
             newInfo.setOnline(true);
             infoRepository.save(newInfo);
+
         }
     }
 
