@@ -46,12 +46,17 @@ public class PostWebSocketHandler extends TextWebSocketHandler {
         if (info != null) {
             info.setOnline(true);
             infoRepository.save(info);
+        } else {
+            Info newInfo = new Info(mac, "");
+            newInfo.setOnline(true);
+            infoRepository.save(newInfo);
         }
     }
 
     @Override
     protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
         JSONObject json = new JSONObject(message.getPayload());
+        System.out.println(message.getPayload());
         if (json.getString("password").equals(this.password) && macSessions.containsKey(session)) {
             systemData.addServerInfo(json);
             infoWebSocketHandler.sendOneInfo(json.toString());
