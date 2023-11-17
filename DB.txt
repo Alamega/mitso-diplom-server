@@ -1,8 +1,1 @@
-Postgres cluster alamegawatcherdb created
 
-  Username:    postgres
-  Password:    KDzrOxL63Vgqt8R
-  Hostname:    alamegawatcherdb.internal
-  Proxy port:  5432
-  Postgres port:  5433
-  Connection string: postgres://postgres:KDzrOxL63Vgqt8R@alamegawatcherdb.flycast:5432
