@@ -13,9 +13,6 @@
 ### Страница ПК:
 
 <img src="readme_assets/2.png" alt = "2">
-<img src="readme_assets/3.png" alt = "3">
-<img src="readme_assets/4.png" alt = "4">
-<img src="readme_assets/5.png" alt = "5">
 
 ### Панель администратора:
 
